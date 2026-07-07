@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Query
-from fastapi.responses import JSONResponse
 import math
 import random
-from datetime import datetime, timedelta
-from typing import Optional
+
+from fastapi import APIRouter, Query
 
 router = APIRouter()
+
 
 def detect_anomalies_zscore(values: list[float], threshold: float = 2.5) -> list[dict]:
     n = len(values)
@@ -20,21 +19,33 @@ def detect_anomalies_zscore(values: list[float], threshold: float = 2.5) -> list
     for i, v in enumerate(values):
         z = abs((v - mean) / std)
         if z > threshold:
-            results.append({"index": i, "value": v, "z_score": round(z, 2), "severity": "critical" if z > 3.5 else "warning"})
+            results.append(
+                {"index": i, "value": v, "z_score": round(z, 2), "severity": "critical" if z > 3.5 else "warning"}
+            )
     return results
+
 
 def detect_anomalies_moving_avg(values: list[float], window: int = 7, factor: float = 2.0) -> list[dict]:
     if len(values) < window + 1:
         return []
     results = []
     for i in range(window, len(values)):
-        window_vals = values[i - window:i]
+        window_vals = values[i - window : i]
         avg = sum(window_vals) / window
         dev = math.sqrt(sum((x - avg) ** 2 for x in window_vals) / window) or 1
         curr = values[i]
         if abs(curr - avg) > factor * dev:
-            results.append({"index": i, "value": curr, "expected": round(avg, 2), "deviation": round((curr - avg) / avg * 100, 1), "severity": "critical" if abs(curr - avg) > 3 * dev else "warning"})
+            results.append(
+                {
+                    "index": i,
+                    "value": curr,
+                    "expected": round(avg, 2),
+                    "deviation": round((curr - avg) / avg * 100, 1),
+                    "severity": "critical" if abs(curr - avg) > 3 * dev else "warning",
+                }
+            )
     return results
+
 
 @router.post("/detect")
 async def detect(
@@ -48,6 +59,7 @@ async def detect(
     else:
         anomalies = detect_anomalies_moving_avg(values, window, threshold)
     return {"method": method, "count": len(anomalies), "anomalies": anomalies}
+
 
 @router.get("/simulate")
 async def simulate(periods: int = Query(30, ge=7, le=90)):

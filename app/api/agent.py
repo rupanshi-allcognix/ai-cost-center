@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Request
-from fastapi.responses import StreamingResponse, JSONResponse
-import json
 import asyncio
+import json
+
+from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse, StreamingResponse
 
 router = APIRouter()
+
 
 async def run_workflow_stream(payload: dict):
     input_text = payload.get("input", "")
@@ -19,28 +21,50 @@ async def run_workflow_stream(payload: dict):
         data = event.get("data", {})
 
         if kind == "on_chain_start":
-            yield f"data: {json.dumps({'type': 'node_start', 'node': name, 'content': f'starting {name}', 'metadata': {'tokens': 0, 'cost_usd': 0, 'latency_ms': 0}})}\n\n"
+            data_dict = {
+                "type": "node_start",
+                "node": name,
+                "content": f"starting {name}",
+                "metadata": {"tokens": 0, "cost_usd": 0, "latency_ms": 0},
+            }
+            yield f"data: {json.dumps(data_dict)}\n\n"
         elif kind == "on_chain_end":
-            yield f"data: {json.dumps({'type': 'node_end', 'node': name, 'content': f'finished {name}', 'metadata': {'tokens': 0, 'cost_usd': 0, 'latency_ms': 0}})}\n\n"
+            data_dict = {
+                "type": "node_end",
+                "node": name,
+                "content": f"finished {name}",
+                "metadata": {"tokens": 0, "cost_usd": 0, "latency_ms": 0},
+            }
+            yield f"data: {json.dumps(data_dict)}\n\n"
         elif kind == "on_chain_stream":
             output = data.get("output", "")
             if isinstance(output, dict) and output.get("response"):
-                yield f"data: {json.dumps({'type': 'token', 'node': name, 'content': output['response'], 'metadata': {'tokens': 10, 'cost_usd': 0.0001, 'latency_ms': 50}})}\n\n"
+                data_dict = {
+                    "type": "token",
+                    "node": name,
+                    "content": output["response"],
+                    "metadata": {"tokens": 10, "cost_usd": 0.0001, "latency_ms": 50},
+                }
+                yield f"data: {json.dumps(data_dict)}\n\n"
 
-    yield f"data: {json.dumps({'type': 'final', 'node': 'final', 'content': 'Analysis complete.', 'metadata': {}})}\n\n"
+    data_dict = {"type": "final", "node": "final", "content": "Analysis complete.", "metadata": {}}
+    yield f"data: {json.dumps(data_dict)}\n\n"
+
 
 @router.post("/chat")
 async def chat(request: Request):
     body = await request.json()
-    return StreamingResponse(run_workflow_stream(body), media_type='text/event-stream')
+    return StreamingResponse(run_workflow_stream(body), media_type="text/event-stream")
+
 
 @router.post("/chat/stream")
 async def chat_stream(request: Request):
-    body = await request.json()
+    await request.json()
+
     async def streamer():
         services = [
             {"name": "EC2", "cost": 1200.0, "currency": "USD", "change_pct": 5.2},
-            {"name": "S3", "cost": 300.0, "currency": "USD", "change_pct": -1.1}
+            {"name": "S3", "cost": 300.0, "currency": "USD", "change_pct": -1.1},
         ]
         total = sum(s["cost"] for s in services)
         obj = {"services": services, "total": total, "anomalies": []}
@@ -55,7 +79,9 @@ async def chat_stream(request: Request):
             yield f"data: {json.dumps({'type': 'partial', 'value': obj})}\n\n"
             await asyncio.sleep(0.1)
         yield f"data: {json.dumps({'type': 'done'})}\n\n"
-    return StreamingResponse(streamer(), media_type='text/event-stream')
+
+    return StreamingResponse(streamer(), media_type="text/event-stream")
+
 
 @router.post("/copilot")
 async def copilot_handler(request: Request):

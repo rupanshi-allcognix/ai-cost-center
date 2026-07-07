@@ -1,8 +1,10 @@
-from typing import TypedDict, Literal
-from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
-import random
 import math
+import random
+from typing import Literal, TypedDict
+
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
+
 
 class AgentState(TypedDict):
     input: str
@@ -11,6 +13,7 @@ class AgentState(TypedDict):
     anomalies: list
     recommendations: str
     response: str
+
 
 def classify_intent(state: AgentState) -> AgentState:
     text = state.get("input", "").lower()
@@ -26,6 +29,7 @@ def classify_intent(state: AgentState) -> AgentState:
         intent = "general"
     state["intent"] = intent
     return state
+
 
 def query_cost_data(state: AgentState) -> AgentState:
     base = 10000
@@ -46,28 +50,42 @@ def query_cost_data(state: AgentState) -> AgentState:
     state["anomalies"] = anomalies
     return state
 
+
 def generate_recommendations(state: AgentState) -> AgentState:
     intent = state["intent"]
     anomalies = state.get("anomalies", [])
     if intent == "anomaly_investigation" and anomalies:
         top = max(anomalies, key=lambda a: a["z_score"])
-        state["recommendations"] = f"Found a significant cost spike (z-score: {top['z_score']}). Investigate day {top['day']} resources for untagged or oversized instances."
+        state["recommendations"] = (
+            f"Found a significant cost spike (z-score: {top['z_score']}). Investigate day {top['day']} resources for untagged or oversized instances."  # noqa: E501
+        )
     elif intent == "forecast":
-        state["recommendations"] = "Based on current trend, projected EOM spend is ~$320k. Consider setting budget alerts at 80% and 90% thresholds."
+        state["recommendations"] = (
+            "Based on current trend, projected EOM spend is ~$320k. Consider setting budget alerts at 80% and 90% thresholds."  # noqa: E501
+        )
     elif intent == "optimization":
-        state["recommendations"] = "Identified 3 idle EBS volumes ($340/mo) and 1 over-provisioned RDS instance ($180/mo potential savings)."
+        state["recommendations"] = (
+            "Identified 3 idle EBS volumes ($340/mo) and 1 over-provisioned RDS instance ($180/mo potential savings)."  # noqa: E501
+        )
     elif intent == "resource_analysis":
-        state["recommendations"] = "EC2 fleet has 78% avg utilization. RDS db-main-prod is at 45% — consider downsizing from r5.large to r5.xlarge."
+        state["recommendations"] = (
+            "EC2 fleet has 78% avg utilization. RDS db-main-prod is at 45% — consider downsizing from r5.large to r5.xlarge."  # noqa: E501
+        )
     else:
-        state["recommendations"] = "Current MTD spend is $284.5k, down 8.8% from last month. No critical anomalies detected."
+        state["recommendations"] = (
+            "Current MTD spend is $284.5k, down 8.8% from last month. No critical anomalies detected."  # noqa: E501
+        )
     return state
+
 
 def build_response(state: AgentState) -> AgentState:
     state["response"] = state.get("recommendations", "Analysis complete.")
     return state
 
+
 def should_continue(state: AgentState) -> Literal["query_cost_data", "generate_recommendations"]:
     return "query_cost_data" if state["intent"] == "anomaly_investigation" else "generate_recommendations"
+
 
 workflow = StateGraph(AgentState)
 
