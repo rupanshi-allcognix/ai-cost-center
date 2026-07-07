@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  ai-cost-center-backend:
+    image: ai-cost-center-backend:latest
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER}
+
+  ai-cost-center-deployment:
+    build:
+      context: ../ai-cost-center-deployment
+    ports:
+      - "8001:8001"
+    environment:
+      - LANGGRAPH_URL=http://langgraph:8080
