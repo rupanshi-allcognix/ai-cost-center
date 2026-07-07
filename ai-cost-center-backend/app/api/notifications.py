@@ -1,16 +1,15 @@
+import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import httpx
-import os
-import json
-from typing import Optional
 
 router = APIRouter()
+
 
 class SlackWebhookPayload(BaseModel):
     webhook_url: str
     message: str
-    severity: Optional[str] = "info"
+    severity: str | None = "info"
+
 
 class AnomalyAlert(BaseModel):
     resource_id: str
@@ -19,6 +18,7 @@ class AnomalyAlert(BaseModel):
     expected: float
     severity: str
     timestamp: str
+
 
 @router.post("/slack/test")
 async def test_slack(payload: SlackWebhookPayload):
@@ -33,13 +33,23 @@ async def test_slack(payload: SlackWebhookPayload):
         raise HTTPException(status_code=resp.status_code, detail=f"Slack returned {resp.status_code}")
     return {"status": "ok"}
 
+
 @router.post("/slack/alert")
 async def send_alert(alert: AnomalyAlert, webhook_url: str):
     severity_emoji = {"critical": "🔴", "warning": "🟡", "info": "🔵"}
     emoji = severity_emoji.get(alert.severity, "⚪")
     blocks = [
         {"type": "header", "text": {"type": "plain_text", "text": f"{emoji} Anomaly Detected: {alert.resource_id}"}},
-        {"type": "section", "text": {"type": "mrkdwn", "text": f"*Metric:* {alert.metric}\n*Observed:* {alert.observed}\n*Expected:* {alert.expected}\n*Severity:* {alert.severity}"}},
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": (
+                    f"*Metric:* {alert.metric}\n*Observed:* {alert.observed}\n"
+                    f"*Expected:* {alert.expected}\n*Severity:* {alert.severity}"
+                ),
+            },
+        },
         {"type": "context", "elements": [{"type": "mrkdwn", "text": f"Detected at {alert.timestamp}"}]},
     ]
     async with httpx.AsyncClient() as client:
