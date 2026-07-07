@@ -39,7 +39,7 @@ def detect_anomalies_moving_avg(values: list[float], window: int = 7, factor: fl
 @router.post("/detect")
 async def detect(
     values: list[float],
-    method: str = Query("zscore", regex="^(zscore|moving_avg)$"),
+    method: str = Query("zscore", pattern="^(zscore|moving_avg)$"),
     threshold: float = Query(2.5, ge=0.5, le=5.0),
     window: int = Query(7, ge=3, le=30),
 ):
