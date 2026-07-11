@@ -1,12 +1,14 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { KpiCard } from '@/components/dashboard/kpi-card'
-import { TrendChart } from '@/components/charts/trend-chart'
 import { TopCostDrivers } from '@/components/dashboard/top-cost-drivers'
-import { SavingsRealizedCard } from '@/components/dashboard/savings-realized-card'
 import { ActivityFeed } from '@/components/dashboard/activity-feed'
-import { BudgetRing } from '@/components/dashboard/budget-ring'
+
+const TrendChart = dynamic(() => import('@/components/charts/trend-chart').then((m) => m.TrendChart), { ssr: false })
+const SavingsRealizedCard = dynamic(() => import('@/components/dashboard/savings-realized-card').then((m) => m.SavingsRealizedCard), { ssr: false })
+const BudgetRing = dynamic(() => import('@/components/dashboard/budget-ring').then((m) => m.BudgetRing), { ssr: false })
 import {
   kpiMetrics,
   costTrendData,

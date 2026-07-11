@@ -13,6 +13,18 @@ import {
   BudgetData,
 } from '@/lib/types/index'
 
+function createRng(seed: number) {
+  let s = seed
+  return {
+    next(): number {
+      s = (s * 16807) % 2147483647
+      return (s - 1) / 2147483646
+    },
+  }
+}
+
+const rng = createRng(42)
+
 const now = new Date()
 const days = Array.from({ length: 30 }, (_, i) => {
   const d = new Date(now)
@@ -29,7 +41,7 @@ export const kpiMetrics: KpiMetric[] = [
     trend: -8.8,
     sparklineData: days.map((date, i) => ({
       date,
-      value: 8000 + Math.random() * 4000 + i * 200,
+      value: 8000 + rng.next() * 4000 + i * 200,
     })),
   },
   {
@@ -40,7 +52,7 @@ export const kpiMetrics: KpiMetric[] = [
     trend: 18.9,
     sparklineData: days.map((date, i) => ({
       date,
-      value: 500 + Math.random() * 1000 + i * 50,
+      value: 500 + rng.next() * 1000 + i * 50,
     })),
   },
   {
@@ -51,7 +63,7 @@ export const kpiMetrics: KpiMetric[] = [
     trend: -41.7,
     sparklineData: days.map((date) => ({
       date,
-      value: Math.floor(Math.random() * 20) + 3,
+      value: Math.floor(rng.next() * 20) + 3,
     })),
   },
   {
@@ -62,17 +74,17 @@ export const kpiMetrics: KpiMetric[] = [
     trend: -5.6,
     sparklineData: days.map((date, i) => ({
       date,
-      value: 40 + (i / 29) * 35 + Math.random() * 5,
+      value: 40 + (i / 29) * 35 + rng.next() * 5,
     })),
   },
 ]
 
 export const costTrendData: CostDataPoint[] = days.map((date, i) => ({
   date,
-  actual: 8000 + Math.random() * 3000 + i * 150,
+  actual: 8000 + rng.next() * 3000 + i * 150,
   forecast:
     i > 20
-      ? 8000 + Math.random() * 3000 + i * 150 + 1000
+      ? 8000 + rng.next() * 3000 + i * 150 + 1000
       : undefined,
 }))
 
@@ -176,8 +188,8 @@ export const resources: Resource[] = [
 
 export const tokenUsageData: TokenUsage[] = days.map((date, i) => ({
   date,
-  promptTokens: Math.floor(500000 + Math.random() * 300000 + i * 15000),
-  completionTokens: Math.floor(300000 + Math.random() * 200000 + i * 10000),
+  promptTokens: Math.floor(500000 + rng.next() * 300000 + i * 15000),
+  completionTokens: Math.floor(300000 + rng.next() * 200000 + i * 10000),
   totalTokens: 0,
   cost: 0,
 }))
@@ -197,10 +209,10 @@ export const forecastData: ForecastData[] = forecastDays.map((date, i) => {
   const base = 10000 + i * 100
   return {
     date,
-    predicted: base + Math.random() * 2000,
-    upperBound: base + Math.random() * 2000 + 3000,
-    lowerBound: base + Math.random() * 2000 - 2000,
-    actual: i < 30 ? base + Math.random() * 1500 : undefined,
+    predicted: base + rng.next() * 2000,
+    upperBound: base + rng.next() * 2000 + 3000,
+    lowerBound: base + rng.next() * 2000 - 2000,
+    actual: i < 30 ? base + rng.next() * 1500 : undefined,
   }
 })
 

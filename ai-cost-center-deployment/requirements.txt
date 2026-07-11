@@ -1,3 +1,2 @@
-chainlit==1.1.304
-langgraph==1.2.6
+chainlit>=1.1.304
 ruff==0.9.1

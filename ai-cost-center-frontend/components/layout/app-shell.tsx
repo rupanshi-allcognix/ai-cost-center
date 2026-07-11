@@ -1,10 +1,15 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { useAppStore } from '@/lib/store'
-import { Sidebar } from './sidebar'
 import { TopBar } from './topbar'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
+
+const Sidebar = dynamic(() => import('./sidebar').then((m) => m.Sidebar), {
+  ssr: false,
+  loading: () => <div className="w-60 shrink-0 border-r bg-card" />,
+})
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

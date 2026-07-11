@@ -1,26 +1,31 @@
 # AI Cost Center
 
-## Commands (run in order)
-- `npm run dev` — dev server on :3000
-- `npm run lint` → `npm run typecheck` → `npm run build` — validation pipeline
+## Project Structure
+```
+/
+├── ai-cost-center-frontend/    # Next.js 14 App Router (React + shadcn/ui)
+├── ai-cost-center-backend/     # FastAPI + LangGraph (Docker)
+├── ai-cost-center-deployment/  # Chainlit debug deployment (Docker)
+└── docker-compose.yml          # Orchestrates backend + deployment
+```
+
+## Commands
+- `cd ai-cost-center-frontend && npm run dev` — dev server on :3000
+- `cd ai-cost-center-frontend && npm run lint` → `npm run typecheck` → `npm run build` — validation pipeline
+- `docker-compose up` — backend on :8000, deployment on :8001
 - No test framework configured (mock-data only)
 
-## Project Structure
-- `app/` — Next.js App Router pages (11 routes: /overview, /costs, /chat, /settings, etc.)
-- `components/ui/` — shadcn/ui primitives (button, card, etc.)
-- `components/layout/` — AppShell, Sidebar, TopBar
-- `components/dashboard/`, `components/charts/`, `components/chat/` — feature components
-- `lib/store.ts` — Zustand (useAppStore + useChatStore)
-- `lib/mock-data.ts` — all mock data; swap imports to real API later
-- `lib/types/index.ts` — TypeScript interfaces
-- `lib/utils.ts` — cn(), formatCurrency(), formatPercent(), getTrendColor()
-- `ai-cost-center-backend/` — FastAPI backend (Docker + LangGraph)
-
-## Conventions
-- `@/*` path alias maps to project root (e.g. `import { cn } from '@/lib/utils'`)
+## Frontend Conventions
+- `@/*` path alias (`tsconfig.json` in frontend dir)
 - NavItem.icon values are Lucide icon name strings (not JSX)
-- CSS variables for colors including `success` and `warning` (shadcn custom)
+- CSS variables for `success` and `warning` colors (shadcn custom)
 - Dark mode via `next-themes` with `class` strategy
-- `'use client'` required in components using state/effects/interactivity
+- `'use client'` required in interactive components
 - No project `.prettierrc` — `prettier-plugin-tailwindcss` available but unconfigured
-- Stale `.next/` cache can cause build errors — delete it before rebuild if pages fail
+- Stale `.next/` cache can cause build errors — delete before rebuild if pages fail
+
+## Key Directories (inside `ai-cost-center-frontend/`)
+- `app/` — 11 pages + 5 API routes
+- `components/` — ui/ (shadcn), layout/, dashboard/, charts/, chat/, streaming/, copilot/
+- `lib/` — types/, store.ts, mock-data.ts, utils.ts, csv.ts, adapters/, auth/, chat/
+- `app/api/` — stub API routes for standalone dev (agent, anomaly, auth, notifications)

@@ -1,36 +1,58 @@
+import json
 import os
+
 import chainlit as cl
+import httpx
 
-GRAPH_URL = os.environ.get('LANGGRAPH_URL', 'http://langgraph:8080')
+BACKEND_URL = os.environ.get("LANGGRAPH_URL", "http://ai-cost-center-backend:8000").rstrip("/")
 
-try:
-    from langgraph import Graph
-    graph = Graph(GRAPH_URL)
-except ImportError:
-    graph = None
 
 @cl.on_message
 async def main(message: str):
-    if graph is None:
-        await cl.Message(content=f"LangGraph not available. Message received: {message}").send()
-        return
-    run = graph.run(message)
-    for node_output in run.stream():
-        step = cl.Step(name=node_output.node, content=node_output.content)
-        step.set_metadata({
-            'tokens': node_output.metadata.get('tokens'),
-            'latency_ms': node_output.metadata.get('latency_ms'),
-            'cost_usd': node_output.metadata.get('cost_usd')
-        })
-        await cl.sleep(0)
-        await cl.send(step)
+    msg = cl.Message(content="")
+    await msg.send()
 
-@cl.on_message
-async def upload_file(msg: cl.AskFileMessage):
-    if graph is None:
-        await cl.Message(content="Upload received but LangGraph not available").send()
-        return
-    f = msg.file
-    content = await f.read()
-    graph.run({'upload': {'filename': f.name, 'content': content}})
-    await cl.send('Uploaded and queued for ingestion')
+    async with httpx.AsyncClient(timeout=60) as client:
+        try:
+            async with client.stream(
+                "POST",
+                f"{BACKEND_URL}/api/agent/chat",
+                json={"input": message},
+            ) as response:
+                if response.status_code != 200:
+                    await msg.stream_token(
+                        f"Error: Backend returned {response.status_code}"
+                    )
+                    return
+
+                current_step = None
+                async for line in response.aiter_lines():
+                    if not line.startswith("data: "):
+                        continue
+                    data_str = line[6:]
+                    try:
+                        event = json.loads(data_str)
+                    except json.JSONDecodeError:
+                        continue
+
+                    etype = event.get("type", "")
+                    node = event.get("node", "")
+                    content = event.get("content", "")
+
+                    if etype == "node_start":
+                        current_step = cl.Step(name=node)
+                        await current_step.start()
+                    elif etype == "node_end":
+                        if current_step:
+                            current_step.output = content
+                            await current_step.send()
+                            current_step = None
+                    elif etype == "token":
+                        await msg.stream_token(content)
+                    elif etype == "final":
+                        await msg.stream_token(f"\n\n{content}")
+
+        except httpx.ConnectError:
+            await msg.stream_token(
+                "Backend is unavailable. Please ensure the service is running."
+            )
