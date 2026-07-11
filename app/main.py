@@ -7,6 +7,11 @@ from .api import agent, anomaly, notifications
 
 app = FastAPI()
 
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
+
 origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8001").split(",")
 app.add_middleware(
     CORSMiddleware,
