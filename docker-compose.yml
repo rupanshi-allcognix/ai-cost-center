@@ -5,33 +5,6 @@ services:
       - "8000:8000"
     env_file: .env
 
-  ai-cost-center-deployment:
-    build: ./ai-cost-center-deployment
-    ports:
-      - "8001:8001"
-    environment:
-      - LANGGRAPH_URL=http://ai-cost-center-backend:8000
-    command:
-      [
-        "chainlit",
-        "run",
-        "app.py",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8001",
-        "--root-path",
-        "/chat",
-      ]
-
-  ai-cost-center-frontend:
-    build: ./ai-cost-center-frontend
-    ports:
-      - "3000"
-    environment:
-      - NODE_ENV=production
-      - BACKEND_URL=http://localhost/api
-
   nginx:
     image: nginx:alpine
     ports:
@@ -45,21 +18,3 @@ services:
       retries: 3
     depends_on:
       - ai-cost-center-backend
-      - ai-cost-center-deployment
-      - ai-cost-center-frontend
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run
-    env_file:
-      - ./.env
-    depends_on:
-      nginx:
-        condition: service_healthy
-    init: true
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    restart: unless-stopped
