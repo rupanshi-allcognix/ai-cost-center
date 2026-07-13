@@ -1,6 +1,8 @@
 services:
   ai-cost-center-backend:
-    build: ./ai-cost-center-backend
+    build:
+      context: .
+      dockerfile: ai-cost-center-backend/Dockerfile
     ports:
       - "8000:8000"
     env_file: .env
