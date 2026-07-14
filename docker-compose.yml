@@ -20,3 +20,18 @@ services:
       retries: 3
     depends_on:
       - ai-cost-center-backend
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    env_file: .env
+    depends_on:
+      nginx:
+        condition: service_healthy
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped

@@ -1,4 +1,3 @@
-import math
 
 _rng_seed = 42
 
