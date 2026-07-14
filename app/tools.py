@@ -1,11 +1,11 @@
 from .data import (
-    SERVICES,
     ANOMALIES,
-    RESOURCES,
     BUDGET,
+    RESOURCES,
     SAVINGS_MONTHLY,
-    get_total_spend,
+    SERVICES,
     get_daily_trend,
+    get_total_spend,
 )
 
 
