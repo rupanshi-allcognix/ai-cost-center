@@ -2,14 +2,12 @@ version: "3.9"
 
 services:
   ai-cost-center-backend:
-    build: ./ai-cost-center-backend
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./backend
+      dockerfile: docker/Dockerfile
     image: allcognix/infra:ai-cost-center-backend-${IMAGE_VERSION}
     ports:
       - "8000:8000"
-    env_file: .env
     env_file:
       - .env
 
@@ -26,3 +24,18 @@ services:
       retries: 3
     depends_on:
       - ai-cost-center-backend
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      nginx:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --protocol
+      - http2
+      - run
