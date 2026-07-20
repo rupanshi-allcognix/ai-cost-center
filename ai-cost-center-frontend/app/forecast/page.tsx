@@ -2,9 +2,9 @@
 
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, ComposedChart } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import { forecastData } from '@/lib/mock-data'
+import { formatCurrency } from '@/utils'
 
+import { forecastData } from '@/utils/mock-data'
 export default function ForecastPage() {
   return (
     <div className="space-y-6">

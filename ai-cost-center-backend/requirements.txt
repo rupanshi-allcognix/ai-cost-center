@@ -1,7 +1,0 @@
-fastapi==0.138.0
-uvicorn[standard]==0.49.0
-langgraph==1.2.6
-langchain-openai
-pytest==8.3.4
-httpx==0.28.1
-ruff==0.9.1

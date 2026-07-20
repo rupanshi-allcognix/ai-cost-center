@@ -2,9 +2,9 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import { tokenUsageData } from '@/lib/mock-data'
+import { formatCurrency } from '@/utils'
 
+import { tokenUsageData } from '@/utils/mock-data'
 export default function TokensPage() {
   const totalTokens = tokenUsageData.reduce((s, d) => s + d.totalTokens, 0)
   const totalCost = tokenUsageData.reduce((s, d) => s + d.cost, 0)

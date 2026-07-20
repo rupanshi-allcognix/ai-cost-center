@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, CardContent } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import type { BudgetData } from '@/lib/types/index'
+import { formatCurrency } from '@/utils'
 
+import type { BudgetData } from '@/utils/types'
 export function BudgetRing({ data }: { data: BudgetData }) {
   const radius = 48
   const circumference = 2 * Math.PI * radius

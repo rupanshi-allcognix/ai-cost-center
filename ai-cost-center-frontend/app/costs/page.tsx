@@ -3,9 +3,9 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { formatCurrency } from '@/lib/utils'
-import { downloadCSV } from '@/lib/csv'
-import { costTrendData } from '@/lib/mock-data'
+import { formatCurrency } from '@/utils'
+import { downloadCSV } from '@/utils/csv'
+import { costTrendData } from '@/utils/mock-data'
 import { Download } from 'lucide-react'
 
 export default function CostsPage() {

@@ -2,9 +2,9 @@
 
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import type { CostDataPoint } from '@/lib/types/index'
+import { formatCurrency } from '@/utils'
 
+import type { CostDataPoint } from '@/utils/types'
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (

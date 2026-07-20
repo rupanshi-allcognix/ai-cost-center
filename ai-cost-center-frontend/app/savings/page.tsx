@@ -3,9 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { formatCurrency } from '@/lib/utils'
-import { downloadCSV } from '@/lib/csv'
-import { savingsData } from '@/lib/mock-data'
+import { formatCurrency } from '@/utils'
+import { downloadCSV } from '@/utils/csv'
+import { savingsData } from '@/utils/mock-data'
 import { Download } from 'lucide-react'
 
 const recommendations = [

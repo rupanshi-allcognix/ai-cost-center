@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { cn, formatCurrency, formatNumber, formatPercent } from '@/lib/utils'
-import type { KpiMetric } from '@/lib/types/index'
+import { cn, formatCurrency, formatNumber, formatPercent } from '@/utils'
+import type { KpiMetric } from '@/utils/types'
 import { useEffect, useState } from 'react'
 
 function Sparkline({ data }: { data: { value: number }[] }) {

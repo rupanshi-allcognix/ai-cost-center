@@ -2,9 +2,9 @@
 
 import { Server, Database, Zap, Container, HardDrive } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import type { ServiceCost } from '@/lib/types/index'
+import { formatCurrency } from '@/utils'
 
+import type { ServiceCost } from '@/utils/types'
 const iconMap: Record<string, React.ElementType> = {
   Server,
   Database,

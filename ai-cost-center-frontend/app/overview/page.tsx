@@ -16,7 +16,7 @@ import {
   savingsData,
   agentActivities,
   budgetData,
-} from '@/lib/mock-data'
+} from '@/utils/mock-data'
 
 export default function OverviewPage() {
   return (

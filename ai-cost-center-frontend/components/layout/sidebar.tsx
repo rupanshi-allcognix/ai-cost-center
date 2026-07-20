@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { useAppStore, navItems } from '@/lib/store'
+import { cn } from '@/utils'
+import { useAppStore, navItems } from '@/store'
 import {
   LayoutDashboard,
   Binary,

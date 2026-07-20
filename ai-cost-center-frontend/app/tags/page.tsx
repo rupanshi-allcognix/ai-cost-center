@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { taggingStats } from '@/lib/mock-data'
+import { taggingStats } from '@/utils/mock-data'
 
 const pieData = [
   { name: 'Tagged', value: taggingStats.tagged },

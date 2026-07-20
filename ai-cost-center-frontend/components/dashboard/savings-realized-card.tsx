@@ -2,9 +2,9 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
-import type { SavingsEntry } from '@/lib/types/index'
+import { formatCurrency } from '@/utils'
 
+import type { SavingsEntry } from '@/utils/types'
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
   return (

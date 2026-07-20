@@ -25,7 +25,16 @@
 - Stale `.next/` cache can cause build errors — delete before rebuild if pages fail
 
 ## Key Directories (inside `ai-cost-center-frontend/`)
-- `app/` — 11 pages + 5 API routes
+- `app/` — 11 pages + 5 API routes (Next.js App Router)
 - `components/` — ui/ (shadcn), layout/, dashboard/, charts/, chat/, streaming/, copilot/
-- `lib/` — types/, store.ts, mock-data.ts, utils.ts, csv.ts, adapters/, auth/, chat/
+- `utils/` — helpers (utils, csv, mock-data, types, auth-config)
+- `services/` — API clients & adapters (chat-client, assistant-runtime, cloud adapters)
+- `store/` — Zustand stores
+- `hooks/` — custom React hooks
+- `seo/` — SEO metadata & site config
+- `reducer/` — state slices
+- `loaders/` — loading states
+- `assest/` — images, icons, videos
+- `scripts/` — build / SEO tooling
+- `public/` — static assets (served as-is)
 - `app/api/` — stub API routes for standalone dev (agent, anomaly, auth, notifications)

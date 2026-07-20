@@ -6,7 +6,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Sun, Moon, MessageSquare, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { useAppStore, navItems } from '@/lib/store'
+import { useAppStore, navItems } from '@/store'
 import { Separator } from '@/components/ui/separator'
 import {
   DropdownMenu,

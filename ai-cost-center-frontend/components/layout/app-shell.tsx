@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { useAppStore } from '@/lib/store'
+import { useAppStore } from '@/store'
 import { TopBar } from './topbar'
 import { ErrorBoundary } from '@/components/ui/error-boundary'
 

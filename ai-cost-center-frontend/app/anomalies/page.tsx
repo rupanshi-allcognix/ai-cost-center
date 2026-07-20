@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { anomalies } from '@/lib/mock-data'
-import { formatCurrency } from '@/lib/utils'
+import { anomalies } from '@/utils/mock-data'
+import { formatCurrency } from '@/utils'
 import { AlertTriangle, Info, AlertCircle } from 'lucide-react'
 
 const severityIcon = { critical: AlertCircle, warning: AlertTriangle, info: Info }

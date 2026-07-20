@@ -4,8 +4,8 @@ import { useState, useRef } from 'react'
 import { MessageRenderer } from './message-renderer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { getSuggestedPrompts } from '@/lib/mock-data'
-import { useChatStore } from '@/lib/store'
+import { getSuggestedPrompts } from '@/utils/mock-data'
+import { useChatStore } from '@/store'
 import { Send, Loader2 } from 'lucide-react'
 
 export function ChatThread() {

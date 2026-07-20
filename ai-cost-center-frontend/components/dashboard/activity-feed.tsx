@@ -3,9 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { CheckCircle, AlertTriangle, HardDrive, FileText, Info } from 'lucide-react'
-import type { AgentActivity } from '@/lib/types/index'
-import { cn } from '@/lib/utils'
+import type { AgentActivity } from '@/utils/types'
 
+import { cn } from '@/utils'
 const iconMap: Record<string, React.ElementType> = {
   CheckCircle,
   AlertTriangle,

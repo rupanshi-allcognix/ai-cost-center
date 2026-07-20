@@ -1,3 +1,3 @@
-import { handlers } from '@/lib/auth/config'
+import { handlers } from '@/utils/auth-config'
 
 export const { GET, POST } = handlers
