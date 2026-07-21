@@ -4,6 +4,7 @@
 ```
 /
 ├── ai-cost-center-frontend/    # Next.js 14 App Router (React + shadcn/ui)
+│   └── src/                    # All source code
 ├── ai-cost-center-backend/     # FastAPI + LangGraph (Docker)
 ├── ai-cost-center-deployment/  # Chainlit debug deployment (Docker)
 └── docker-compose.yml          # Orchestrates backend + deployment
@@ -25,16 +26,17 @@
 - Stale `.next/` cache can cause build errors — delete before rebuild if pages fail
 
 ## Key Directories (inside `ai-cost-center-frontend/`)
-- `app/` — 11 pages + 5 API routes (Next.js App Router)
-- `components/` — ui/ (shadcn), layout/, dashboard/, charts/, chat/, streaming/, copilot/
-- `utils/` — helpers (utils, csv, mock-data, types, auth-config)
-- `services/` — API clients & adapters (chat-client, assistant-runtime, cloud adapters)
-- `store/` — Zustand stores
-- `hooks/` — custom React hooks
-- `seo/` — SEO metadata & site config
-- `reducer/` — state slices
-- `loaders/` — loading states
-- `assest/` — images, icons, videos
-- `scripts/` — build / SEO tooling
+- `src/` — all application source code
+  - `app/` — 11 pages + 5 API routes (Next.js App Router)
+  - `components/` — ui/ (shadcn), layout/, dashboard/, charts/, chat/, streaming/, copilot/
+  - `utils/` — helpers (utils, csv, mock-data, types, auth-config)
+  - `services/` — API clients & adapters (chat-client, assistant-runtime, cloud adapters)
+  - `store/` — Zustand stores
+  - `hooks/` — custom React hooks
+  - `seo/` — SEO metadata & site config
+  - `reducer/` — state slices
+  - `loaders/` — loading states
+  - `assest/` — images, icons, videos
 - `public/` — static assets (served as-is)
+- `scripts/` — build / SEO tooling
 - `app/api/` — stub API routes for standalone dev (agent, anomaly, auth, notifications)
