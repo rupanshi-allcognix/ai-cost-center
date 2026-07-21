@@ -26,7 +26,7 @@ SECRETS = {
     "r2_secret_access_key": "",
     "r2_endpoint_url": "",
     "r2_bucket": "ai-cost-center-prod",
-    "keycloak_url": "http://keycloak:8080",
+    "keycloak_url": "https://auth-infra.allcognix.com/",
     "keycloak_realm": "ai-cost-center",
     "keycloak_client_id": "backend",
     "keycloak_client_secret": "",

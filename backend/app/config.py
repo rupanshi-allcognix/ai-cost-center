@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     r2_secret_access_key: str = ""
     r2_bucket: str = "ai-cost-center"
 
-    keycloak_url: str = "http://localhost:8080"
+    keycloak_url: str = "https://auth-infra.allcognix.com/"
     keycloak_realm: str = "ai-cost-center"
     keycloak_client_id: str = "backend"
     keycloak_client_secret: str = ""
