@@ -1,8 +1,8 @@
 services:
   ai-cost-center-backend:
     build:
-      context: .
-      dockerfile: ${BACKEND_DOCKERFILE:-ai-cost-center-backend/Dockerfile}
+      context: ./ai-cost-center-backend/backend
+      dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
     env_file: .env
@@ -35,3 +35,11 @@ services:
     cap_drop:
       - ALL
     restart: unless-stopped
+
+  ai-cost-center-frontend:
+    build:
+      context: ./ai-cost-center-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file: .env

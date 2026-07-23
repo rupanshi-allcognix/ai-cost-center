@@ -1,0 +1,98 @@
+name: Backend CI/CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      IMAGE_VERSION:
+        description: "Docker Image Version (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: ruff check .
+      - run: python -m pytest -v
+
+  build-and-push:
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.event.inputs.IMAGE_VERSION }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Create Dummy .env
+        run: |
+          echo "IMAGE_VERSION=$VERSION" > .env
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Images
+        run: |
+          cp docker-compose.yml docker-compose.ci.yml
+
+          services=$(docker compose -f docker-compose.ci.yml config --format json | jq -r '
+            .services
+            | to_entries[]
+            | select(.value.build)
+            | "\(.key)|\(.value.build.context)|\(.value.build.dockerfile // "Dockerfile")"
+          ')
+
+          echo "$services" | while IFS='|' read -r service context dockerfile; do
+
+            case "$service" in
+              ai-cost-center-backend)
+                IMAGE_NAME="cost-center-backend"
+                ;;
+
+              nginx)
+                IMAGE_NAME="cost-center-nginx"
+                ;;
+
+              *)
+                IMAGE_NAME="$service"
+                ;;
+            esac
+
+            VERSION_TAG="allcognix/infra:${IMAGE_NAME}-${VERSION}"
+            LATEST_TAG="allcognix/infra:${IMAGE_NAME}-latest"
+
+            echo "Building $VERSION_TAG"
+
+            docker buildx build "$context" \
+              --file "$context/$dockerfile" \
+              --platform linux/amd64 \
+              --tag "$VERSION_TAG" \
+              --tag "$LATEST_TAG" \
+              --push
+
+          done
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f docker-compose.ci.yml
+          rm -f .env

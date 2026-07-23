@@ -14,6 +14,10 @@ interface AppState {
   toggleChat: () => void
   isMobile: boolean
   setIsMobile: (mobile: boolean) => void
+  awsConnected: boolean
+  awsAccountId: string | null
+  awsAccountAlias: string | null
+  setAWSConnected: (connected: boolean, accountId?: string | null, alias?: string | null) => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -27,6 +31,11 @@ export const useAppStore = create<AppState>((set) => ({
   toggleChat: () => set((state) => ({ chatOpen: !state.chatOpen })),
   isMobile: false,
   setIsMobile: (mobile) => set({ isMobile: mobile }),
+  awsConnected: false,
+  awsAccountId: null,
+  awsAccountAlias: null,
+  setAWSConnected: (connected, accountId = null, alias = null) =>
+    set({ awsConnected: connected, awsAccountId: accountId, awsAccountAlias: alias }),
 }))
 
 export const navItems: NavItem[] = [
